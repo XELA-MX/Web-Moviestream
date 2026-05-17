@@ -126,7 +126,3 @@ Listado de películas con búsqueda por título, género y año:
 
 - Modelo y decisiones embed/reference: [`model.md`](model.md)
 - Reflexión del proyecto: [`REFLECTION.md`](REFLECTION.md)
-
-## Notas de seguridad
-
-No subas `.env`, wallets (`Wallet_*`) ni contraseñas al repositorio. Están listados en [`.gitignore`](.gitignore).
