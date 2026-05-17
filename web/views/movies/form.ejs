@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+
+<h1><%= title %></h1>
+
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="flash error"><%= error %></div>
+<% } %>
+
+<form method="post" action="<%= action %>">
+  <% if (method === 'PUT') { %>
+    <input type="hidden" name="_method" value="PUT">
+  <% } %>
+
+  <div class="form-grid">
+    <% if (method === 'POST') { %>
+      <div class="form-group">
+        <label>ID (opcional, auto si vacío)</label>
+        <input type="number" name="_id" value="<%= movie._id ?? '' %>">
+      </div>
+    <% } else { %>
+      <input type="hidden" name="_id" value="<%= movie._id %>">
+    <% } %>
+
+    <div class="form-group">
+      <label>Título *</label>
+      <input type="text" name="title" value="<%= movie.title || '' %>" required>
+    </div>
+    <div class="form-group">
+      <label>SKU</label>
+      <input type="text" name="sku" value="<%= movie.sku || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Año</label>
+      <input type="number" name="year" value="<%= movie.year ?? '' %>">
+    </div>
+    <div class="form-group">
+      <label>Runtime</label>
+      <input type="text" name="runtime" value="<%= movie.runtime || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Precio lista</label>
+      <input type="number" step="0.01" name="listPrice" value="<%= movie.listPrice ?? '' %>">
+    </div>
+    <div class="form-group">
+      <label>Vistas</label>
+      <input type="number" name="views" value="<%= movie.views ?? '' %>">
+    </div>
+    <div class="form-group full">
+      <label>Resumen</label>
+      <textarea name="summary"><%= movie.summary || '' %></textarea>
+    </div>
+    <div class="form-group">
+      <label>Asunto principal</label>
+      <input type="text" name="mainSubject" value="<%= movie.mainSubject || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Fecha estreno</label>
+      <input type="text" name="openingDate" value="<%= movie.openingDate || '' %>">
+    </div>
+    <div class="form-group">
+      <label>URL imagen</label>
+      <input type="text" name="imageUrl" value="<%= movie.imageUrl || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Wiki</label>
+      <input type="text" name="wikiArticle" value="<%= movie.wikiArticle || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Presupuesto</label>
+      <input type="text" name="budget" value="<%= movie.budget || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Recaudación</label>
+      <input type="text" name="gross" value="<%= movie.gross || '' %>">
+    </div>
+  </div>
+
+  <h2>Géneros embebidos <span class="badge embed">array en el documento</span></h2>
+  <p style="color:var(--muted);font-size:0.85rem;">Añade o quita filas. No hay colección global de géneros.</p>
+  <div id="genres-container">
+    <% (movie.genres || [{ genreId: '', name: '' }]).forEach((g, i) => { %>
+      <div class="genre-row">
+        <input type="number" name="genres[<%= i %>][genreId]" placeholder="ID" value="<%= g.genreId ?? '' %>">
+        <input type="text" name="genres[<%= i %>][name]" placeholder="Nombre" value="<%= g.name || '' %>">
+        <button type="button" class="btn secondary" onclick="this.parentElement.remove()">Quitar</button>
+      </div>
+    <% }) %>
+  </div>
+  <button type="button" id="add-genre" class="btn secondary">+ Añadir género</button>
+
+  <h2>JSON opcional</h2>
+  <div class="form-grid">
+    <div class="form-group full">
+      <label>Cast (JSON array)</label>
+      <textarea name="cast"><%= movie.cast ? JSON.stringify(movie.cast, null, 2) : '' %></textarea>
+    </div>
+    <div class="form-group full">
+      <label>Crew (JSON object)</label>
+      <textarea name="crew"><%= movie.crew ? JSON.stringify(movie.crew, null, 2) : '' %></textarea>
+    </div>
+    <div class="form-group full">
+      <label>Studio (JSON)</label>
+      <textarea name="studio"><%= movie.studio ? JSON.stringify(movie.studio, null, 2) : '' %></textarea>
+    </div>
+  </div>
+
+  <div class="actions" style="margin-top:1.5rem;">
+    <button type="submit" class="btn">Guardar</button>
+    <a href="<%= movie._id ? '/movies/' + movie._id : '/movies' %>" class="btn secondary">Cancelar</a>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+
+<% if (typeof query !== 'undefined' && query.ok) { %>
+  <div class="flash ok">Operación: <%= query.ok %></div>
+<% } %>
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+  <h1>Actividad <%= activity._id %></h1>
+  <div class="actions">
+    <a href="/activities/<%= encodeURIComponent(activity._id) %>/edit" class="btn">Editar</a>
+    <form method="post" action="/activities/<%= encodeURIComponent(activity._id) %>" style="display:inline" onsubmit="return confirm('¿Eliminar esta actividad?')">
+      <input type="hidden" name="_method" value="DELETE">
+      <button type="submit" class="btn danger">Eliminar</button>
+    </form>
+    <a href="/activities" class="btn secondary">Volver</a>
+  </div>
+</div>
+
+<div class="note">
+  Los snapshots se copian al crear/editar. Cambiar la película en el catálogo no actualiza actividades ya guardadas.
+</div>
+
+<div class="detail-grid">
+  <div class="detail-box">
+    <h2>Evento</h2>
+    <dl>
+      <dt>Actividad</dt><dd><%= activity.activity || '—' %></dd>
+      <dt>Fecha</dt><dd><%= activity.activityTime ? new Date(activity.activityTime).toLocaleString('es') : '—' %></dd>
+      <dt>App</dt><dd><%= activity.app || '—' %></dd>
+      <dt>OS</dt><dd><%= activity.os || '—' %></dd>
+      <dt>Dispositivo</dt><dd><%= activity.device?.name || '—' %> (<%= activity.device?.type || '—' %>)</dd>
+    </dl>
+  </div>
+
+  <div class="detail-box">
+    <h2>Cliente <span class="badge ref">referencia</span></h2>
+    <dl>
+      <dt>customerId</dt><dd><%= activity.customerId %></dd>
+      <% if (customer) { %>
+        <dt>Nombre</dt><dd><%= customer.firstName %> <%= customer.lastName %></dd>
+        <dt>Email</dt><dd><%= customer.email %></dd>
+      <% } else { %>
+        <dt>Lookup</dt><dd style="color:var(--danger)">Cliente no encontrado (referencia huérfana)</dd>
+      <% } %>
+    </dl>
+  </div>
+
+  <div class="detail-box">
+    <h2>Película <span class="badge ref">referencia</span></h2>
+    <dl>
+      <dt>movieId</dt><dd>
+        <% if (movie) { %>
+          <a href="/movies/<%= movie._id %>"><%= activity.movieId %></a>
+        <% } else { %>
+          <%= activity.movieId %> <span style="color:var(--danger)">(película no encontrada)</span>
+        <% } %>
+      </dd>
+      <% if (movie) { %>
+        <dt>Catálogo actual</dt><dd><%= movie.title %> (<%= movie.year %>)</dd>
+      <% } %>
+    </dl>
+  </div>
+
+  <div class="detail-box">
+    <h2>Snapshots <span class="badge embed">embebidos</span></h2>
+    <dl>
+      <dt>movieSnapshot</dt>
+      <dd><pre class="json"><%= JSON.stringify(activity.movieSnapshot, null, 2) %></pre></dd>
+      <dt>genreSnapshot</dt>
+      <dd><pre class="json"><%= JSON.stringify(activity.genreSnapshot, null, 2) %></pre></dd>
+    </dl>
+    <p style="color:var(--muted);font-size:0.85rem;">
+      Copia histórica al momento del guardado. Puede diferir del catálogo actual.
+    </p>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

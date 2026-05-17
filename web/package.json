@@ -1,0 +1,17 @@
+{
+  "name": "moviestream-web",
+  "version": "1.0.0",
+  "description": "Interfaz web simple para MovieStream (MongoDB)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "method-override": "^3.0.0",
+    "mongodb": "^6.12.0"
+  }
+}

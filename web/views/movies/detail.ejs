@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<% if (typeof query !== 'undefined' && query.ok) { %>
+  <div class="flash ok">Operación: <%= query.ok %></div>
+<% } %>
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+  <h1><%= movie.title %></h1>
+  <div class="actions">
+    <a href="/movies/<%= movie._id %>/edit" class="btn">Editar</a>
+    <a href="/movies/<%= movie._id %>/delete" class="btn danger">Eliminar</a>
+    <a href="/movies" class="btn secondary">Volver</a>
+  </div>
+</div>
+
+<% if (activityCount > 0) { %>
+  <div class="note">
+    Esta película está referenciada en <strong><%= activityCount %></strong> actividad(es).
+    Si la eliminas, esas actividades conservarán <code>movieId</code> y el snapshot histórico.
+  </div>
+<% } %>
+
+<div class="detail-grid">
+  <div class="detail-box">
+    <h2>Datos principales</h2>
+    <dl>
+      <dt>ID</dt><dd><%= movie._id %></dd>
+      <dt>SKU</dt><dd><%= movie.sku || '—' %></dd>
+      <dt>Año</dt><dd><%= movie.year ?? '—' %></dd>
+      <dt>Runtime</dt><dd><%= movie.runtime || '—' %></dd>
+      <dt>Precio</dt><dd><%= movie.listPrice ?? '—' %></dd>
+      <dt>Vistas</dt><dd><%= movie.views ?? '—' %></dd>
+      <dt>Resumen</dt><dd><%= movie.summary || '—' %></dd>
+    </dl>
+  </div>
+  <div class="detail-box">
+    <h2>Géneros <span class="badge embed">embebidos</span></h2>
+    <% if (!movie.genres || movie.genres.length === 0) { %>
+      <p>Sin géneros</p>
+    <% } else { %>
+      <ul>
+        <% movie.genres.forEach(g => { %>
+          <li><%= g.genreId %> — <%= g.name %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+    <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;">
+      No existe colección <code>genres</code>. Editar o quitar un género solo afecta esta película.
+    </p>
+  </div>
+</div>
+
+<% if (movie.cast || movie.crew || movie.studio) { %>
+  <h2>JSON embebido</h2>
+  <pre class="json"><%= JSON.stringify({ cast: movie.cast, crew: movie.crew, studio: movie.studio, awards: movie.awards, nominations: movie.nominations }, null, 2) %></pre>
+<% } %>
+
+<%- include('../partials/footer') %>

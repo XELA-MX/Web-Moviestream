@@ -1,0 +1,9 @@
+.env
+
+/Migracion/.env
+/Migracion/Wallet_TC3004B
+/Migracion/__pycache__
+/Migracion/.venv
+
+/web/node_modules
+/web/.env

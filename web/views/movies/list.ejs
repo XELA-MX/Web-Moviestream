@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <h1>Películas</h1>
+  <a href="/movies/new" class="btn">Nueva película</a>
+</div>
+
+<% if (typeof query !== 'undefined' && query.ok === 'deleted') { %>
+  <div class="flash ok">Película eliminada.<% if (query.orphaned > 0) { %> <%= query.orphaned %> actividad(es) quedaron con referencia huérfana.<% } %></div>
+<% } %>
+
+<form class="filters" method="get" action="/movies">
+  <label>Título <input type="text" name="q" value="<%= filters.q || '' %>"></label>
+  <label>Género <input type="text" name="genre" value="<%= filters.genre || '' %>"></label>
+  <label>Año <input type="number" name="year" value="<%= filters.year || '' %>"></label>
+  <button type="submit" class="btn secondary">Buscar</button>
+  <a href="/movies" class="btn secondary">Limpiar</a>
+</form>
+
+<p style="color: var(--muted);"><%= total %> resultado(s)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Título</th>
+      <th>Año</th>
+      <th>Géneros</th>
+      <th>Vistas</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (movies.length === 0) { %>
+      <tr><td colspan="6">Sin resultados</td></tr>
+    <% } %>
+    <% movies.forEach(m => { %>
+      <tr>
+        <td><%= m._id %></td>
+        <td><a href="/movies/<%= m._id %>"><%= m.title || '—' %></a></td>
+        <td><%= m.year ?? '—' %></td>
+        <td>
+          <% (m.genres || []).forEach(g => { %>
+            <span class="badge embed"><%= g.name || g.genreId %></span>
+          <% }) %>
+        </td>
+        <td><%= m.views ?? '—' %></td>
+        <td class="actions">
+          <a href="/movies/<%= m._id %>/edit" class="btn secondary">Editar</a>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<% if (total > limit) { %>
+  <div class="pagination">
+    <% if (skip > 0) { %>
+      <a href="/movies?skip=<%= Math.max(0, skip - limit) %>&limit=<%= limit %>&q=<%= filters.q || '' %>&genre=<%= filters.genre || '' %>&year=<%= filters.year || '' %>">← Anterior</a>
+    <% } %>
+    <span><%= skip + 1 %>–<%= Math.min(skip + limit, total) %> de <%= total %></span>
+    <% if (skip + limit < total) { %>
+      <a href="/movies?skip=<%= skip + limit %>&limit=<%= limit %>&q=<%= filters.q || '' %>&genre=<%= filters.genre || '' %>&year=<%= filters.year || '' %>">Siguiente →</a>
+    <% } %>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

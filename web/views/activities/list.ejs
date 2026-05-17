@@ -1,0 +1,79 @@
+<%- include('../partials/header') %>
+
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <h1>Actividades</h1>
+  <a href="/activities/new" class="btn">Nueva actividad</a>
+</div>
+
+<% if (typeof query !== 'undefined' && query.ok) { %>
+  <div class="flash ok">
+    <% if (query.ok === 'deleted') { %>Actividad eliminada<% } %>
+    <% if (query.ok === 'created') { %>Actividad creada<% } %>
+    <% if (query.ok === 'updated') { %>Actividad actualizada<% } %>
+  </div>
+<% } %>
+
+<form class="filters" method="get" action="/activities">
+  <label>Cliente ID <input type="number" name="customerId" value="<%= filters.customerId || '' %>"></label>
+  <label>Película ID <input type="number" name="movieId" value="<%= filters.movieId || '' %>"></label>
+  <label>Actividad <input type="text" name="activity" value="<%= filters.activity || '' %>"></label>
+  <label>Desde <input type="datetime-local" name="from" value="<%= filters.from || '' %>"></label>
+  <label>Hasta <input type="datetime-local" name="to" value="<%= filters.to || '' %>"></label>
+  <button type="submit" class="btn secondary">Filtrar</button>
+  <a href="/activities" class="btn secondary">Limpiar</a>
+</form>
+
+<p style="color: var(--muted);"><%= total %> resultado(s) · <span class="badge ref">referencias + snapshots</span></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Cliente</th>
+      <th>Película</th>
+      <th>Actividad</th>
+      <th>Fecha</th>
+      <th>Snapshot</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (activities.length === 0) { %>
+      <tr><td colspan="7">Sin resultados</td></tr>
+    <% } %>
+    <% activities.forEach(a => { %>
+      <tr>
+        <td><a href="/activities/<%= encodeURIComponent(a._id) %>"><%= a._id %></a></td>
+        <td><%= a.customerId %></td>
+        <td>
+          <%= a.movieId %>
+          <% if (a.movieSnapshot) { %>
+            <br><small style="color:var(--muted)"><%= a.movieSnapshot.title %></small>
+          <% } %>
+        </td>
+        <td><%= a.activity || '—' %></td>
+        <td><%= a.activityTime ? new Date(a.activityTime).toLocaleString('es') : '—' %></td>
+        <td>
+          <% if (a.genreSnapshot) { %>
+            <span class="badge ref"><%= a.genreSnapshot.name %></span>
+          <% } %>
+        </td>
+        <td><a href="/activities/<%= encodeURIComponent(a._id) %>/edit" class="btn secondary">Editar</a></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<% if (total > limit) { %>
+  <div class="pagination">
+    <% if (skip > 0) { %>
+      <a href="/activities?skip=<%= Math.max(0, skip - limit) %>&limit=<%= limit %>">← Anterior</a>
+    <% } %>
+    <span><%= skip + 1 %>–<%= Math.min(skip + limit, total) %> de <%= total %></span>
+    <% if (skip + limit < total) { %>
+      <a href="/activities?skip=<%= skip + limit %>&limit=<%= limit %>">Siguiente →</a>
+    <% } %>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

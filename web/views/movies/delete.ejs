@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<h1>Eliminar película</h1>
+
+<div class="note">
+  <strong><%= movie.title %></strong> (ID <%= movie._id %>)
+  <% if (activityCount > 0) { %>
+    <br><br>
+    Hay <strong><%= activityCount %></strong> actividad(es) que referencian esta película.
+    Si eliminas, <em>no</em> se borran las actividades: quedarán con <code>movieId</code> huérfano
+    y el <code>movieSnapshot</code> guardado en su momento.
+  <% } else { %>
+    <br><br>No hay actividades referenciando esta película.
+  <% } %>
+</div>
+
+<form method="post" action="/movies/<%= movie._id %><%= activityCount > 0 ? '?force=1' : '' %>">
+  <input type="hidden" name="_method" value="DELETE">
+  <div class="actions">
+    <button type="submit" class="btn danger">Confirmar eliminación</button>
+    <a href="/movies/<%= movie._id %>" class="btn secondary">Cancelar</a>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>

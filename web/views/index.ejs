@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+<h1>MovieStream Admin</h1>
+<p style="color: var(--muted);">Interfaz simple para explorar y editar tu modelo documental en MongoDB.</p>
+
+<div class="cards">
+  <div class="card">
+    <h2>Películas</h2>
+    <div class="count"><%= moviesCount %></div>
+    <p><span class="badge embed">géneros embebidos</span></p>
+    <a href="/movies" class="btn">Ver catálogo</a>
+  </div>
+  <div class="card">
+    <h2>Actividades</h2>
+    <div class="count"><%= activitiesCount %></div>
+    <p><span class="badge ref">referencias + snapshots</span></p>
+    <a href="/activities" class="btn">Ver actividades</a>
+  </div>
+  <div class="card">
+    <h2>Clientes</h2>
+    <div class="count"><%= customersCount %></div>
+    <p style="color: var(--muted); font-size: 0.85rem;">Solo lectura (lookup en actividades)</p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
